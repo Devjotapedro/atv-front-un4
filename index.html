@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Média</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background-color: #f0f0f0;
+    }
+
+    nav {
+      background-color: #007bff;
+      padding: 1rem;
+      color: white;
+    }
+
+    nav h1 {
+      margin: 0;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 2rem auto;
+      background-color: white;
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+
+    label {
+      display: block;
+      margin-top: 1rem;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 0.5rem;
+      margin-top: 0.3rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    button {
+      margin-top: 1.5rem;
+      padding: 0.7rem;
+      width: 100%;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    .result-card {
+      margin-top: 2rem;
+      padding: 1rem;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      background-color: #f9f9f9;
+      text-align: center;
+    }
+
+    .result-card h5, .result-card h6, .result-card p {
+      margin: 0.5rem 0;
+      font-size: 16px;
+    }
+
+    .error {
+      color: red;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <h1>Calculadora de Notas</h1>
+  </nav>
+  <div class="container">
+    <h2>Administre Aqui as Suas Notas Escolares</h2>
+    <form>
+      <label for="nome">Digite seu Nome:</label>
+      <input type="text" id="nome" placeholder="Ex:João Pedro" required>
+      <label for="materia">Escolha a Disciplina:</label>
+      <select id="materia" required>
+        <option value="Desenvolvimento Web Front-end">Desenvolvimento Web Front-end</option>
+        <option value="Bancos de Dados">Bancos de Dados</option>
+        <option value="Lógica de Programação">Lógica de Programação</option>
+        <option value="Filosofia, Ciência e Tecnologia">Filosofia, Ciência e Tecnologia</option>
+        <option value="Gestão Organizacional">Gestão Organizacional</option>
+        <option value="Programação Orientada a Objetos">Programação Orientada a Objetos</option>
+        <option value="Sistemas Operacionais Abertos">Sistemas Operacionais Abertos</option>
+        <option value="Tópicos Avançados em Sistemas para Internet I">Tópicos Avançados em Sistemas para Internet I</option>
+        <option value="Fundamentos e Práticas na EaD">Fundamentos e Práticas na EaD</option>
+      </select>
+      <label for="nota1">Nota da 1º Unidade:</label>
+      <input type="number" id="nota1" min="0" max="10" placeholder="Ex: 10" required>
+      <label for="nota2">Nota da 2º Unidade:</label>
+      <input type="number" id="nota2" min="0" max="10" placeholder="Ex: 10" required>
+      <label for="nota3">Nota da 3º Unidade:</label>
+      <input type="number" id="nota3" min="0" max="10" placeholder="Ex: 10" required>
+      <label for="nota4">Nota da 4º Unidade:</label>
+      <input type="number" id="nota4" min="0" max="10" placeholder="Ex: 10" required>
+      <button type="button" onclick="calcNota()">Calcular Nota</button>
+    </form>
+    <div class="result-card">
+      <h5 id="nomeResult"></h5>
+      <h6 id="situacao"></h6>
+      <p id="materiaResult"></p>
+      <h6 id="mediaResult"></h6>
+      <p id="mensagemErro" class="error"></p>
+    </div>
+  </div>
+  <script>
+    function calcNota() {
+      let nota1 = parseFloat(document.getElementById("nota1").value);
+      let nota2 = parseFloat(document.getElementById("nota2").value);
+      let nota3 = parseFloat(document.getElementById("nota3").value);
+      let nota4 = parseFloat(document.getElementById("nota4").value);
+      let nomeAluno = document.getElementById("nome").value;
+      let materia = document.getElementById("materia").value;
+
+      const notas = [nota1, nota2, nota3, nota4];
+
+      if (notas.some(n => isNaN(n) || n < 0 || n > 10)) {
+        document.getElementById("mensagemErro").textContent = "As notas devem estar entre 0 e 10.";
+        return;
+      }
+      document.getElementById("mensagemErro").textContent = "";
+      
+      let media = calcularMedia(notas);
+      let situacao;
+      if (media >= 6) {
+        situacao = "Parabéns! Você está APROVADO!";
+      } else if (media >= 5) {
+        situacao = "Você está em RECUPERAÇÃO!";
+      } else {
+        situacao = "Infelizmente você está REPROVADO!";
+      }
+
+      showResult(situacao, nomeAluno, materia, media);
+    }
+
+    function calcularMedia(notas) {
+      let soma = 0;
+      for (let i = 0; i < notas.length; i++) {
+        soma += notas[i];
+      }
+      return soma / notas.length;
+    }
+
+    function showResult(situacao, nome, materia, media) {
+      document.getElementById("nomeResult").textContent = `Seja bem-vindo, ${nome}!`;
+      document.getElementById("materiaResult").textContent = `Disciplina: ${materia}`;
+      document.getElementById("mediaResult").textContent = `Sua média é: ${media.toFixed(2)}`;
+      document.getElementById("situacao").textContent = situacao;
+    }
+  </script>
+</body>
+</html>
